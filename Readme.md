@@ -2,4 +2,4 @@
 
 This is a video series on backend with javascript
 
-- [ Model link ](https://app.eraser.io/workspace/YtPqZIVogxGy1jzIDk?zj?origin=share)
+- [ Model link ](https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj)

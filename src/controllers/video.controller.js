@@ -82,8 +82,59 @@ const publishAVideo = asyncHandler(async (req, res)=>{
 
 })
 
-// const getAllVideos = asyncHandler(async (req, res)=>{
-//     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
-// })
+const getAllVideos = asyncHandler(async (req, res)=>{
+    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
 
-export {publishAVideo}
+    const pageNum = parseInt(page)
+    const limitNum = parseInt(limit)
+    const skip = (pageNum-1) * limitNum;
+
+    const filter = {};
+    if(query){
+        filter.$or=[
+            {title: {$regex: query,$options: "i"}},
+            {description: {$regex: query, $options: "i"}}
+        ];
+    }
+
+    if(userId){
+        filter.owner=userId
+    }
+
+    let sortOPtions = {};
+    if(sortBy){
+        sortOPtions[sortBy] = sortType === "asc"?1:-1;
+    }else{
+        sortOPtions.createdAt= -1;
+    }
+
+    const videos = await Video.find(filter)
+    .sort(sortOPtions)
+    .skip(skip)
+    .limit(limitNum)
+
+    const totalVideos = await Video.countDocuments(filter);
+
+    let message=!videos?.length?"No videos found!!":"Videos loaded successfully";
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                totalVideos,
+                currentPage: pageNum,
+                totalPages: Math.ceil(totalVideos / limitNum),
+                videos
+            },
+            message
+        )
+    )
+})
+
+
+export {
+    publishAVideo,
+    getAllVideos
+}

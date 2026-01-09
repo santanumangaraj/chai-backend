@@ -6,6 +6,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { Video } from "../models/video.model.js";
 import mongoose from "mongoose";
 import { upload } from "../middlewares/multer.middleware.js";
+import { application } from "express";
 
 const publishAVideo = asyncHandler(async (req, res)=>{
     //get user details from frontend
@@ -161,8 +162,87 @@ const getVideosById = asyncHandler(async (req, res)=>{
     )
 })
 
+const updateVideoDetails = asyncHandler(async (req, res)=>{
+    const {title,description} = req.body
+    const {videoId} = req.params
+
+    if(!title || !description){
+        throw new ApiError(400,"All fields are required")
+    }
+
+    if(!videoId){
+        throw new ApiError(400,"Video Id is required")
+    }
+
+    const video= await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set: {
+                title,
+                description
+            }
+        },
+        {new: true}
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, video,"Video details updated successfully")
+    )
+
+})
+
+const deleteAVideo = asyncHandler(async (req, res)=>{
+    const {videoId} = req.params
+
+    if(!videoId){
+        throw new ApiError(400,"Video id is required")
+    }
+
+    const video = await Video.findByIdAndDelete(
+        videoId,
+    )
+
+    if(!video){
+        throw new ApiError(400,"Video not exist")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,video,"Video deleted successfully")
+    )
+
+})
+
+const togglePublishStatus = asyncHandler(async (req, res)=>{
+    const {videoId} = req.params
+
+    if(!videoId){
+        throw new ApiError(400,"Video id is required")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if(!video){
+        throw new ApiError(400,"Error occured while finding the video")
+    }
+
+    video.isPublished = !video.isPublished
+    await video.save()
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,video,"Video Published status update successfully")
+    )
+})
 export {
     publishAVideo,
     getAllVideos,
-    getVideosById
+    getVideosById,
+    updateVideoDetails,
+    deleteAVideo,
+    togglePublishStatus
 }

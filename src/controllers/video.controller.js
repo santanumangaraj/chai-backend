@@ -19,7 +19,6 @@ const publishAVideo = asyncHandler(async (req, res)=>{
     
     const {title,description} = req.body
 
-    console.log("Req:", req)
     if([title,description].some((field)=> field?.trim() === "")){
         throw new ApiError(400, "All fields are required")
     }
@@ -89,6 +88,11 @@ const getAllVideos = asyncHandler(async (req, res)=>{
     const limitNum = parseInt(limit)
     const skip = (pageNum-1) * limitNum;
 
+
+    if(!query){
+        throw new ApiError(400, "Query is missing")
+    }
+
     const filter = {};
     if(query){
         filter.$or=[
@@ -133,8 +137,32 @@ const getAllVideos = asyncHandler(async (req, res)=>{
     )
 })
 
+const getVideosById = asyncHandler(async (req, res)=>{
+    const {videoId} = req.params
+
+    if(!videoId){
+        throw new ApiError(400,"video id is missing")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if(!video){
+        throw new ApiError(400,"video not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            video,
+            "Video loaded successfully"
+        )
+    )
+})
 
 export {
     publishAVideo,
-    getAllVideos
+    getAllVideos,
+    getVideosById
 }

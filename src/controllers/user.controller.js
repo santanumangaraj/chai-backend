@@ -22,6 +22,7 @@ const generateAccessAndRefreshTokens = async (userId) =>{
         throw new ApiError(500, "Something went wrong while generating refresh and access token")
     }
 }
+
 const registerUser = asyncHandler( async (req , res) =>{
     // get user details from frontend
     // validation - not empty
@@ -90,7 +91,7 @@ const registerUser = asyncHandler( async (req , res) =>{
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully!!")
     )
-} )
+})
 
 const loginUser = asyncHandler(async (req, res)=>{
     //req body -> data
@@ -104,7 +105,7 @@ const loginUser = asyncHandler(async (req, res)=>{
     const {email,username, password} = req.body
     // console.log(req.body)
     if( !(username || email)){
-        throw new ApiError(400, " username or email is required")
+        throw new ApiError(400, "username or email is required")
     }
 
     const user = await User.findOne({

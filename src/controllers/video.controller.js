@@ -4,9 +4,6 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Video } from "../models/video.model.js";
-import mongoose from "mongoose";
-import { upload } from "../middlewares/multer.middleware.js";
-import { application } from "express";
 
 const publishAVideo = asyncHandler(async (req, res)=>{
     //get user details from frontend

@@ -23,7 +23,7 @@ const toggleSubscription = asyncHandler (async (req , res)=>{
         subscriber:subscriberId
     })
     
-    if(channelId == subscriberId){///correct need
+    if(channelId == subscriberId){
         throw new ApiError(400,"Subscriber can't subscribed to their channel")
     }
 
@@ -124,6 +124,7 @@ const getUserChannelSubscibers= asyncHandler(async (req, res)=>{
     )
 
 })
+
 export {
     toggleSubscription,
     getSubscribedChannel,

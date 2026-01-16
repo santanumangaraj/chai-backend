@@ -17,7 +17,6 @@ const toggleCommentLike = asyncHandler(async (req, res)=>{
         }
     )
     
-    console.log(existingCommentLike)
     let commentLikeDetails,msg;
     
     if(!existingCommentLike){

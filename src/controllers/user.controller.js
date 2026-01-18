@@ -430,7 +430,7 @@ const getWatchHistory = asyncHandler( async (req, res)=>{
                             localField: "owner",
                             foreignField: "_id",
                             as: "owner",
-                            pipline:[
+                            pipeline:[
                                 {
                                     $project:{
                                         fullName: 1,
@@ -452,7 +452,7 @@ const getWatchHistory = asyncHandler( async (req, res)=>{
             }
         }
     ])
-
+    
     return res
     .status(200)
     .json(
